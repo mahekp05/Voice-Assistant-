@@ -39,7 +39,7 @@ def speak(text):
 #CONVERT SPEECH TO TEXT
 r = sr.Recognizer() #recognizer() helps retrieve audio from microphone
 
-speak("Hello ma'am I'm your voice assistant. How are you?")
+speak("Hello ma'am I am Luna, your voice assistant today. How are you?")
 
 with sr.Microphone() as source: #Microphone is our source
     
