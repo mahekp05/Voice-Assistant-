@@ -1,21 +1,22 @@
-#pip install requests 
+#pip install requests
 
-import requests 
+import requests
 from ss import *
 
-api_adress = "https://newsapi.org/v2/everything?q=keyword&apiKey=" + api_key
+#MAKE SURE YOU ARE USING RIGHT LINK HERE
+api_address = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" + api_key
 
-#from requests module
-json_data = requests. get(api_adress).json() #list that has all the latest news
+#from requests module -- get list that has all latest news -- can print this variable to see entire list
+json_data = requests.get(api_address).json()
 
-ar = [] #empty list to store news
+#empty list to store news
+news_list = []
 
-def news():
+def get_news():
     for i in range(3): #extract data from json file
-        ar.append("Number" + str(i+1) + " ," + json_data["articles"][i]["title"]+".")
+        news_list.append("Number" + str(i+1) + " ," + json_data["articles"][i]["title"]+".")
 
-    return ar
+    return news_list
 
-
-#arr = news()
+#list = news()
 #print(arr)
