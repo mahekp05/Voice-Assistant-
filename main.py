@@ -5,7 +5,7 @@
 
 import pyttsx3 as p
 import speech_recognition as sr
-from selenium_web import *
+from selenium_web import infow
 from YT_audio import *
 from news import *
 import randfacts as rf
