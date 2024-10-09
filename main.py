@@ -1,7 +1,7 @@
-#pip install pyttsx3
-#pip install SpeechRecognition
-#pip install PyAudio
-#pip install randfacts
+# pip install pyttsx3
+# pip install SpeechRecognition
+# pip install PyAudio
+# pip install randfacts
 
 import pyttsx3 as p
 import speech_recognition as sr
@@ -11,107 +11,99 @@ from news import *
 import randfacts as rf
 from jokes import *
 
-#initiate pyttsx3 to convert text to speech
-engine = p.init() #get information of current driver
+# Initialize pyttsx3 to convert text to speech
+engine = p.init()
 
-#voice and speed of comp can be changed 
-
-#speed
-rate = engine.getProperty('rate')
-#print(rate) #prints rate -- default is 200
-#change property with setProperty()
-#engine.setProperty('rate',130) #this made the speed slower
-engine.setProperty('rate',180) #this made the speed faster/perfect
-
-#voice
+# Set voice and speed properties
+engine.setProperty('rate', 180)  # Set speech speed
 voices = engine.getProperty('voices')
-#print(voices) #przints/returns list of two items -- two voices windows offers
-#engine.setProperty('voices',voices[1].id) #male voice
-engine.setProperty('voice',voices[1].id) #female voice -- change froom 'voices' to 'voice'
+engine.setProperty('voice', voices[1].id)  # Set to female voice
 
-#everything we want computer to say something we use these two  lines of code -- can put it in function
-#engine.say("hello there i am your voice assistant")
-#engine.runAndWait()
+# Function to convert text to speech
 def speak(text):
     engine.say(text)
     engine.runAndWait()
 
-#CONVERT SPEECH TO TEXT
-r = sr.Recognizer() #recognizer() helps retrieve audio from microphone
+# Initialize speech recognition
+r = sr.Recognizer()
 
-speak("Hello ma'am I am Luna, your voice assistant today. How are you?")
+# Function to capture and recognize speech from the microphone
+def listen_from_mic():
+    with sr.Microphone() as source:
+        # Set background noise and energy threshold properties
+        r.energy_threshold = 10000
+        r.adjust_for_ambient_noise(source, 1.2)
+        
+        print("Listening...")
+        audio = r.listen(source)  # Capture audio from microphone
+        
+        try:
+            text = r.recognize_google(audio)  # Convert audio to text using Google API
+            print(f"Recognized: {text}")  # Display the recognized text
+            return text
+        except sr.UnknownValueError:
+            print("Sorry, I could not understand the audio.")
+            return None
+        except sr.RequestError:
+            print("Sorry, there was an issue with the Google API.")
+            return None
 
-with sr.Microphone() as source: #Microphone is our source
-    
-    #background properties 
-    r.energy_threshold=10000 #increases spectrum of voice -- inc. can even capture low voices
-    r.adjust_for_ambient_noise(source,1.2) #cancels noises around you
-    
-    print("listening")  
-    #CONVERSION -- main part --
-    audio = r.listen(source) #make computer listen to us and store in audio var
-    text = r.recognize_google(audio) #uses google api engine to convert audio to text
-    print(text) #check the audio is converted to text
-if "what" and "about" and "you" in text:
+# Welcome message from the assistant
+speak("Hello ma'am, I am Luna, your voice assistant today. How are you?")
+
+# Listen for the first response
+text = listen_from_mic()
+
+if text and "what" in text and "about" in text and "you" in text:
     speak("I am having a good day ma'am")
-speak("what can i do for you?")
+speak("What can I do for you?")
 
-#Functionality/Automation 
-#ex. search up something on wikipedia and show result
-#use selenium webdriver - pip install selenium
-with sr.Microphone() as source:
-    #background properties 
-    r.energy_threshold=10000 
-    r.adjust_for_ambient_noise(source,1.2) 
-    print("listening")
-    audio = r.listen(source)
-    text2 = r.recognize_google(audio)
+# Main functionality/Automation
+text2 = listen_from_mic()
 
-if "information" in text2:
-    speak("you need information related to which topic?")
-    with sr.Microphone() as source:
-        #background properties 
-        r.energy_threshold=10000 
-        r.adjust_for_ambient_noise(source,1.2) 
-        print("listening")
-        audio = r.listen(source)
-        information = r.recognize_google(audio)
-    speak("searching {} in wikipedia".format(information))
-    assist = infow()
-    speak(assist.get_info(information))
-#YOUTUBE VIDEOS AND AUDIOS
-elif "play" and ("video" or "music") in text2:
-    speak("you want me to play which video?")
-    with sr.Microphone() as source:
-        #background properties 
-        r.energy_threshold=10000 
-        r.adjust_for_ambient_noise(source,1.2) 
-        print("listening")
-        audio = r.listen(source)
-        song = r.recognize_google(audio)
-    speak("Playing {} in youtube".format(song))
-    assist = music()
-    assist.play(song)
-#NEWS
-elif "news" in text2:
-    speak("Sure ma'am, now i will read news for you.")
-    #store content returned in list
-    arr = news()
-    for i in range(len(arr)):
-        print(arr[i])
-        speak(arr[i])
-#RANDOM FACTS
-elif "fact" or "facts" in text2:
-#get random fact and store in x
-    x = rf.get_fact()
-    print(x)
-    speak("Did you know that" + x )
-#JOKES
-elif "joke" or "jokes" in text2:
-    speak("Sure sir, get ready for some chuckles")
-    jokes = joke() #joke function returns list
-    print(arr[0])
-    speak(arr[0])
-    print(arr[1])
-    speak(arr[1])
-#WEATHER + TIME
+if text2:
+    # Wikipedia search functionality
+    if "information" in text2:
+        speak("You need information related to which topic?")
+        information = listen_from_mic()
+        if information:
+            speak(f"Searching {information} in Wikipedia")
+            assist = infow()
+            result = assist.get_info(information)
+            if result:
+                speak(result)
+            assist.close_driver()
+
+    # YouTube video or music playback
+    elif "play" in text2 and ("video" in text2 or "music" in text2):
+        speak("You want me to play which video?")
+        song = listen_from_mic()
+        if song:
+            speak(f"Playing {song} on YouTube")
+            assist = music()
+            assist.play(song)
+
+    # News reading functionality
+    elif "news" in text2:
+        speak("Sure ma'am, now I will read the news for you.")
+        news_list = news()  # Fetch news in list form
+        for item in news_list:
+            print(item)
+            speak(item)
+
+    # Random facts functionality
+    elif "fact" in text2 or "facts" in text2:
+        fact = rf.get_fact()  # Fetch a random fact
+        print(fact)
+        speak(f"Did you know that {fact}")
+
+    # Jokes functionality
+    elif "joke" in text2 or "jokes" in text2:
+        speak("Sure sir, get ready for some chuckles")
+        joke_list = joke()  # Fetch jokes in list form
+        print(joke_list[0])
+        speak(joke_list[0])
+        print(joke_list[1])
+        speak(joke_list[1])
+
+    # Placeholder for future weather or time functionality
