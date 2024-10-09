@@ -6,10 +6,10 @@
 import pyttsx3 as p
 import speech_recognition as sr
 from selenium_web import infow
-from YT_audio import *
-from news import *
+from YT_audio import music
+from news import news
 import randfacts as rf
-from jokes import *
+from jokes import jokes
 
 # Initialize pyttsx3 to convert text to speech
 engine = p.init()
