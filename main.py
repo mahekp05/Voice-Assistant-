@@ -107,3 +107,4 @@ if text2:
         speak(joke_list[1])
 
     # Placeholder for future weather or time functionality
+
