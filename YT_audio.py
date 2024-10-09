@@ -1,23 +1,28 @@
+#pip install selenium
+
+#import selenium
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By  # Import By from Selenium
+from selenium.webdriver.common.by import By
 import time
 
-
 class music():
-    def __init__(self): #constructior funtion initatiting driver - chrome driver
-        chrome_driver_path = r"C:\Users\mahek\chromedriver-win64\chromedriver.exe"         # Path to Chromedriver executable
-        chrome_options = Options() #configure chrome options()
-        self.driver = webdriver.Chrome(service=Service(chrome_driver_path), options=chrome_options) #initialize chrome webdriver
+    #constructor function -- initialize driver
+    def __init__(self):
+        self.driver = webdriver.Chrome()
 
-    def play(self, query):
-        self.query = query #query enetered
-        #automatic search -- always same link except search topic added towards end
-        self.driver.get(url="https://www.youtube.com/results?search_query=" + query) #initiates driver
-        video = self.driver.find_element(By.XPATH, '//*[@id="video-title"]')# Find the search first video title element
-        video.click()         # Submit the search for video
+    def play_song(self, query):
+        #self.query = query
+        if query is None or not isinstance(query, str):
+            print("Error: Query is not valid. Please provide a valid song name.")
+            return
+
+        self.driver.get(url="https://www.youtube.com/results?search_query=" + query) 
+        video = self.driver.find_element(By.XPATH, '//*[@id="video-title"]')#first video title element
+        video.click()
         time.sleep(90)
 
-#assist = music()
-#assist.play("dynamite")
+        self.driver.quit()
+
+
+#assist = play_song()
+#assist.play("risk by gracie abrams")
