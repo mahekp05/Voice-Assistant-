@@ -9,7 +9,7 @@ from selenium_web import infow
 from YT_audio import music
 from news import news
 import randfacts as rf
-from jokes import jokes
+from jokes import joke
 
 # Initialize pyttsx3 to convert text to speech
 engine = p.init()
